@@ -22,6 +22,7 @@ const config: IConfig =  {
         ],
       },
     }],
+    ['./plugin.ts',{}]
   ],
 }
 
