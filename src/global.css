@@ -6,3 +6,10 @@ html, body, #root {
 body {
   margin: 0;
 }
+
+.amap-logo{
+  display: none!important;
+}
+.amap-copyright{
+  display: none!important;
+}
