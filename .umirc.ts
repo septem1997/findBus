@@ -3,6 +3,9 @@ import { IConfig } from 'umi-types';
 // ref: https://umijs.org/config/
 const config: IConfig =  {
   treeShaking: true,
+  extraBabelPlugins:[
+    ["import", {libraryName: "antd-mobile", style: true }]
+  ],
   plugins: [
     // ref: https://umijs.org/plugin/umi-plugin-react.html
     ['umi-plugin-react', {
@@ -11,7 +14,6 @@ const config: IConfig =  {
       dynamicImport: false,
       title: 'findBus',
       dll: false,
-      
       routes: {
         exclude: [
           /models\//,

@@ -1,18 +1,24 @@
 import React from 'react';
-import styles from './index.css';
+import styles from './index.less';
 import axios from 'axios';
 import router from 'umi/router';
+import {Toast} from 'antd-mobile';
 
 export default class extends React.Component {
 
+  private map: any;
 
+  toastFailAndCenterToZhuHai = ()=>{
+    Toast.fail("定位失败，默认为您定位到珠海市")
+    this.map.setZoomAndCenter(12,[113.54712,22.255168])
+  }
   componentDidMount(): void {
     // @ts-ignore
-    let map = new window.AMap.Map('container', {
+    this.map = new window.AMap.Map('container', {
       resizeEnable:true,
       zoom:12
     });
-    map.plugin('AMap.Geolocation', function () {
+    this.map.plugin('AMap.Geolocation',  ()=> {
       let geolocation = new window.AMap.Geolocation({
         enableHighAccuracy: true,//是否使用高精度定位，默认:true
         timeout: 10000,          //超过10秒后停止定位，默认：无穷大
@@ -26,13 +32,19 @@ export default class extends React.Component {
         panToLocation: true,     //定位成功后将定位到的位置作为地图中心点，默认：true
         zoomToAccuracy:true      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
       });
-      map.addControl(geolocation);
+      this.map.addControl(geolocation);
       geolocation.getCurrentPosition();
-      window.AMap.event.addListener(geolocation, 'complete', (res)=>{
-        console.log(res)
+      window.AMap.event.addListener(geolocation, 'complete', (res:any)=>{
+        if (res.addressComponent){
+          if (res.addressComponent.city!=='珠海市'){
+            Toast.info("亲~非珠海市地区无法体验完整功能噢，这边建议您先收藏着，以后来珠海玩再使用")
+          }
+        }else {
+          this.toastFailAndCenterToZhuHai()
+        }
       });//返回定位信息
-      window.AMap.event.addListener(geolocation, 'error', (err)=>{
-        console.log(err)
+      window.AMap.event.addListener(geolocation, 'error', ()=>{
+        this.toastFailAndCenterToZhuHai()
       });      //返回定位出错信息
     });
   }
@@ -44,7 +56,12 @@ export default class extends React.Component {
     // })
 
     return (
-      <div className={styles.normal} id="container"/>
+      <div>
+        <div className={styles.map} id="container"/>
+        <div className={styles.control}>
+
+        </div>
+      </div>
     );
   }
 
