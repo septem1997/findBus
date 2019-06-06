@@ -13,3 +13,6 @@ body {
 .amap-copyright{
   display: none!important;
 }
+.amap-geolocation-con{
+  z-index: 998!important;
+}
