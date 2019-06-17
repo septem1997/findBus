@@ -2,6 +2,8 @@ import React, { createRef } from 'react';
 import styles from './index.less';
 import { Toast, Icon, List } from 'antd-mobile';
 import SearchPanel from '@/components/SearchPanel';
+import DraggablePanel from '@/components/DraggablePanel';
+
 
 export default class extends React.Component {
 
@@ -96,6 +98,9 @@ export default class extends React.Component {
       <div className={styles.map} id="container">
         <SearchPanel myPosition={this.state.myPosition} AMap={this.AMap} map={this.state.map} ref={this.searchPanel}/>
         <Icon onClick={openSearchModal} className={styles.searchIcon} type={'search'}/>
+        <DraggablePanel visible={true} className={styles.drag} baseWidth={50} height={"100%"}>
+          <div style={{width:'200px',background:'white',height:'100%'}}>a</div>
+        </DraggablePanel>
       </div>
     );
   }
