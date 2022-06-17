@@ -7,6 +7,12 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "nuxt": "3.0.0-rc.4"
+    "nuxt": "3.0.0-rc.4",
+    "stylus": "^0.57.0",
+    "stylus-loader": "^7.0.0",
+    "unplugin-vue-components": "^0.19.6"
+  },
+  "dependencies": {
+    "vant": "^3.5.1"
   }
 }
