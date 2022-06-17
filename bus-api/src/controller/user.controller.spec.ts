@@ -4,6 +4,8 @@ import { UserModule } from '../module/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entity/user';
 import { sendMail } from '../util/emailUtil';
+import { CacheModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -11,6 +13,11 @@ describe('UserController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       imports: [
+        CacheModule.register(),
+        ConfigModule.forRoot({
+          envFilePath: ['.env.local', '.env'],
+          isGlobal: true,
+        }),
         TypeOrmModule.forRoot({
           type: 'mysql',
           host: 'localhost',

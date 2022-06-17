@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AppController } from '../controller/app.controller';
 import { AppService } from '../service/app.service';
 import { UserModule } from './user.module';
 import { User } from '../entity/user';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { BusModule } from './bus.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { ConfigModule } from '@nestjs/config';
       entities: [User],
       synchronize: true,
     }),
-    UserModule
+    UserModule,
+    BusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

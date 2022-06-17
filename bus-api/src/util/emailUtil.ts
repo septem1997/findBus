@@ -19,7 +19,7 @@ export const sendMail = async (param: {
     to: param.receiver,
     subject: param.title,
     from: email,
-    text: param.content,
+    html: param.content,
   });
   transporter.close();
 };

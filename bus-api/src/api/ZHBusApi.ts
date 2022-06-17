@@ -35,6 +35,17 @@ const BusAPI = {
     );
     return res.data;
   },
+  async getRoutesByStation(param: BusDto) {
+    const res: AxiosResponse<BusAPIRes> = await BusAxios.post(
+      'ssgj/subroute/getSubRoutesBySegmentidAndStation',
+      {
+        ...param,
+      },
+    );
+    if (res.data.code === 200) {
+      return res.data.data;
+    }
+  },
   async getBusStatusListBySegmentId(segmentid: number, subrouteid: number) {
     const res: AxiosResponse<BusAPIRes> = await BusAxios.post(
       'ssgj/bus/getBusListBySegmentIdAndSubroteid',
@@ -55,10 +66,7 @@ const BusAPI = {
     });
     return res.data;
   },
-  async getNearbyStationsByLocation(param: {
-    latitude: number;
-    longitude: number;
-  }) {
+  async getNearbyStationsByLocation(param: PositionDto) {
     const res: AxiosResponse<BusAPIRes> = await BusAxios.post(
       'ssgj/station/getNearbyStationsByLocation',
       {
@@ -66,7 +74,9 @@ const BusAPI = {
         radius: 1000,
       },
     );
-    return res.data;
+    if (res.data.code === 200) {
+      return res.data.data;
+    }
   },
 };
 export default BusAPI;

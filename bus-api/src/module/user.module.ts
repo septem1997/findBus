@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entity/user';
 import { UserController } from '../controller/user.controller';
@@ -13,7 +13,7 @@ const jwtService = JwtModule.register({
 });
 const userRepository = TypeOrmModule.forFeature([User]);
 @Module({
-  imports: [userRepository, PassportModule, jwtService],
+  imports: [CacheModule.register(), userRepository, PassportModule, jwtService],
   controllers: [UserController],
   providers: [UserService, UserJwtStrategy],
   exports: [UserService, userRepository, UserJwtStrategy, jwtService],

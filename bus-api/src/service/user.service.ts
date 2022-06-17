@@ -1,4 +1,11 @@
-import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  Body,
+  CACHE_MANAGER,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entity/user';
 import { Repository } from 'typeorm';
@@ -6,26 +13,40 @@ import * as bcrypt from 'bcrypt';
 import { UserDto } from '../dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { sendMail } from '../util/emailUtil';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class UserService {
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(User)
     private repository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
-  register(pass: string): Promise<string> {
+  private crypt(pass: string): Promise<string> {
     const saltRounds = 10;
     return bcrypt.hash(pass, saltRounds);
   }
 
   sendValidCode(userDto: UserDto) {
-    // todo random valid code
-    // todo redis
+    // random valid code
+    const randomCode = (Math.random() * 10000).toFixed(0).padStart(4, '0');
+    this.cacheManager.set(userDto.email, randomCode, {
+      ttl: 120,
+    });
+    const html = `<div style="width: 800px;height: 280px;
+          align-items: center;justify-content: center;
+          display: flex;flex-direction: column;">
+        <h2>巴士到哪了</h2>
+        <div style="border: 1px solid #cad5e8;padding: 24px">
+            您好！<br>
+            您的验证码为<strong>${randomCode}</strong>。如非本人操作请忽略本邮件。
+        </div>
+      </div>`;
     sendMail({
-      title: '巴士到哪了-验证码',
-      content: '4444',
+      title: '【巴士到哪了】邮件验证',
+      content: html,
       receiver: userDto.email,
     });
   }
@@ -49,9 +70,12 @@ export class UserService {
         findUser.password,
       );
       if (pwdIsCorrect) {
-        userDto.password = null;
         return {
-          token: 'Bearer ' + this.jwtService.sign(userDto),
+          token:
+            'Bearer ' +
+            this.jwtService.sign({
+              email: userDto.email,
+            }),
           username: findUser.email,
         };
       } else {
@@ -71,16 +95,23 @@ export class UserService {
     if (findAdmin) {
       throw new HttpException('该用户名已存在', HttpStatus.CONFLICT);
     }
+    const randomCode = await this.cacheManager.get(userDto.email);
+    if (!randomCode || randomCode !== userDto.validCode) {
+      throw new HttpException('验证码错误', HttpStatus.CONFLICT);
+    }
     const user = new User();
-    const newPass = await this.register(userDto.password);
+    const encryptPwd = await this.crypt(userDto.password);
     user.email = userDto.email;
-    user.password = newPass;
+    user.password = encryptPwd;
     // user.createTime = new Date().toISOString()
     user.avatar = '';
     await this.repository.save(user);
-    userDto.password = null;
     return {
-      token: 'Bearer ' + this.jwtService.sign(userDto),
+      token:
+        'Bearer ' +
+        this.jwtService.sign({
+          email: userDto.email,
+        }),
       username: user.email,
     };
   }

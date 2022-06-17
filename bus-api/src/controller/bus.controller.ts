@@ -1,6 +1,15 @@
-import { Controller } from '@nestjs/common';
-import { UserService } from '../service/user.service';
-import { SubscribeService } from '../service/subscribe.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import BusAPI from '../api/ZHBusApi';
 
 @Controller('bus')
-export class SubscribeController {}
+export class BusController {
+  @Post('getNearbyLocation')
+  async getNearbyStationsByLocation(@Body() positionDto: PositionDto) {
+    return await BusAPI.getNearbyStationsByLocation(positionDto);
+  }
+
+  @Post('getRoutesByStation')
+  async getRoutesByStation(@Body() busDto: BusDto) {
+    return await BusAPI.getRoutesByStation(busDto);
+  }
+}
