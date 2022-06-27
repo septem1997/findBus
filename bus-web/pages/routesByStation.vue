@@ -11,26 +11,10 @@
 <script setup lang="ts">
 import {definePageMeta, onActivated, onMounted, onUpdated, ref, useRoute} from "#imports";
 
-// definePageMeta({
-//   keepalive:true
-// })
-const stationname = ref('')
-const segmentid = ref('')
 const route = useRoute();
+const stationname = ref(route.query.name as string)
+const segmentid = ref(route.query.id as string)
 const onClickLeft = () => history.back();
-const init = ()=>{
-  console.log(route.query.name)
-  stationname.value = 'asdasd'
-  // segmentid.value = route.query.id as string
-}
-onMounted(()=>{
-  console.log(1)
-  init()
-})
-// onActivated(()=>{
-//   console.log(2)
-//   init()
-// })
 </script>
 
 <style scoped>

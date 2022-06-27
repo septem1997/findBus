@@ -18,7 +18,8 @@
 
 <script setup lang="ts">
 
-import {definePageMeta, onMounted, reactive, ref, useRouter} from "#imports";
+import {definePageMeta, navigateTo, onMounted, reactive, ref, useRouter} from "#imports";
+import useGlobalStore from "~/hooks/globalStore";
 
 definePageMeta({
   layout: 'home',
@@ -26,23 +27,18 @@ definePageMeta({
 })
 const router = useRouter()
 const isLoading = ref(true)
-const nearbyLocations = reactive([] as NearbyStationInfo[])
+const {nearbyLocations,updateNearbyLocations} = useGlobalStore()
 const jumpToRoutes = (station:NearbyStationInfo)=>{
-  router.push(`/routesByStation?id=${station.segmentid}&name=${station.stationname}`)
-}
-onMounted(async () => {
-  const res: any = await $fetch('/api/bus/getNearbyLocation', {
-    method: 'post',
-    body: {
-      latitude: 22.270443979270112,
-      longitude: 113.50502003643797
+  navigateTo({
+    path:'/routesByStation',
+    query:{
+      id:station.segmentid,
+      name:station.stationname
     }
   })
-  if (res.code === 0) {
-    for (const item of res.data) {
-      nearbyLocations.push(item)
-    }
-  }
+}
+onMounted(async () => {
+  await updateNearbyLocations()
   isLoading.value = false
 })
 const searchText = ref('')
