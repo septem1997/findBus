@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-search v-model="searchText" placeholder="搜索公交路线"/>
+    <van-search class="search-bar" v-model="searchText" placeholder="搜索公交路线"/>
     <div style="padding: 0 12px">
       <van-tag round type="primary">附近站点</van-tag>
     </div>
@@ -45,6 +45,11 @@ const searchText = ref('')
 
 </script>
 
-<style scoped>
-
+<style scoped lang="stylus">
+.search-bar{
+  position sticky
+  top 0
+  background white
+  z-index 3
+}
 </style>

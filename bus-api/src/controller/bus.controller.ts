@@ -12,4 +12,9 @@ export class BusController {
   async getRoutesByStation(@Body() busDto: BusDto) {
     return await BusAPI.getRoutesByStation(busDto);
   }
+
+  @Post('getDiffBetweenBusAndStation')
+  async getDiffBetweenBusAndStation(@Body() diffDto: DiffDto) {
+    return await BusAPI.getDiffBetweenBusAndStation(diffDto);
+  }
 }

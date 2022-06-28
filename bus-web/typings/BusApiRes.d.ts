@@ -30,7 +30,8 @@ interface BusStationInfo {
   stationno: string;
 }
 
-interface BusLineInfo {
+interface RouteByStationInfo {
+  diffTime:number;
   diff: number;
   fstsendtime: string;
   fststation: string;

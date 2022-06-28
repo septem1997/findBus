@@ -56,13 +56,9 @@ const BusAPI = {
     );
     return res.data;
   },
-  async getDistanceByStation(param: {
-    segmentid: number;
-    stationname: string;
-    subrouteid: number;
-  }) {
+  async getDiffBetweenBusAndStation(param: DiffDto) {
     const res = await BusAxios.post('ssgj/subroute/getSubRoutesAndBus', {
-      param,
+      ...param,
     });
     return res.data;
   },
