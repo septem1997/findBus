@@ -1,5 +1,5 @@
 <template>
-<div class="route-box">
+<div class="route-box" @click="navigateToDetail">
   <div class="name">
     {{ routeInfo.subroutename }}
   </div>
@@ -32,67 +32,27 @@
 
 <script setup lang="ts">
 import {PropType} from "@vue/runtime-core";
+import {navigateTo, useRoute,useRouter} from "#imports";
 
+const route = useRoute()
+const router = useRouter();
 const props = defineProps({
   routeInfo: Object as PropType<RouteByStationInfo>,
 })
+const navigateToDetail = ()=>{
+  router.push({
+    name:'routeDetail',
+    params:{
+      ...props.routeInfo
+    },
+    query:{
+      segmentId:props.routeInfo.segmentid,
+      routeId:props.routeInfo.subrouteid
+    }
+  })
+}
 </script>
 
 <style scoped lang="stylus">
-.route-box{
-  padding 12px 0
-  border-bottom 1px solid #ddd
-  position relative
-  .name{
-    font-weight bold
-    font-size 18px
-
-  }
-  .diff-time,.distance{
-    position absolute
-    right 12px
-    font-size 14px
-    color #666
-    strong{
-      color #2176ff
-      margin 0 2px
-    }
-  }
-  .diff-time{
-    top 12px
-  }
-  .distance{
-    bottom 12px
-  }
-
-  .station-box{
-    color #666
-    margin 8px 0
-    font-size 14px
-    .arrow i{
-      margin 0 4px
-      color #2176ff
-      transform rotate(-90deg)
-    }
-  }
-  .time-line{
-    display flex
-    align-items center
-  }
-  .time-box{
-    margin-right 12px
-    font-size 14px
-    line-height 14px
-    display flex
-    align-items center
-    color #999
-    .badge{
-      font-size 12px
-      padding 1px
-      margin-right 4px
-      border 1px solid currentColor
-      border-radius 4px
-    }
-  }
-}
+@import "../assets/css/routeInfo.styl"
 </style>

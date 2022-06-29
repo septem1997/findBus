@@ -10,14 +10,20 @@ interface NearbyStationInfo {
   stationtypename: string;
 }
 
+enum BusArriveSymbol{
+  OnStation =1,
+  LeavedStation=2
+}
+
 interface BusStatusInfo {
-  arrivesymbol: 1 | 2;
+  arrivesymbol: BusArriveSymbol;
   busid: string;
   cardid: string;
   segmentid: number;
   sngserialid: number;
   stationid: string;
   stationname: string;
+  busList:BusStationInfo[]
 }
 
 interface BusStationInfo {

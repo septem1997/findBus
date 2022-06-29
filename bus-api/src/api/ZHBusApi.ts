@@ -17,6 +17,13 @@ const BusAxios = axios.create({
 });
 
 const BusAPI = {
+  async getSegmentInfo(segmentInfo: SegmentInfoDto) {
+    const res: AxiosResponse<BusAPIRes> = await BusAxios.post(
+      'ssgj/segment/getOtherSegmentInfoBySegmentId',
+      segmentInfo,
+    );
+    return res.data.data;
+  },
   async getRoutesByLineName(keyword: string) {
     const res: AxiosResponse<BusAPIRes> = await BusAxios.post(
       'ssgj/subroute/getSubRoutesByLineName',
@@ -26,14 +33,14 @@ const BusAPI = {
     );
     return res.data;
   },
-  async getStationsBySegmentId(segmentid: number) {
+  async getStationsBySegmentId(segmentid: string) {
     const res: AxiosResponse<BusAPIRes> = await BusAxios.post(
       'ssgj/station/getStationsBySegmentId',
       {
         key: segmentid,
       },
     );
-    return res.data;
+    return res.data.data;
   },
   async getRoutesByStation(param: BusDto) {
     const res: AxiosResponse<BusAPIRes> = await BusAxios.post(
@@ -46,15 +53,12 @@ const BusAPI = {
       return res.data.data;
     }
   },
-  async getBusStatusListBySegmentId(segmentid: number, subrouteid: number) {
+  async getBusStatusListBySegmentId(segmentInfo: SegmentInfoDto) {
     const res: AxiosResponse<BusAPIRes> = await BusAxios.post(
       'ssgj/bus/getBusListBySegmentIdAndSubroteid',
-      {
-        segmentid,
-        subrouteid,
-      },
+      segmentInfo,
     );
-    return res.data;
+    return res.data.data;
   },
   async getDiffBetweenBusAndStation(param: DiffDto) {
     const res = await BusAxios.post('ssgj/subroute/getSubRoutesAndBus', {

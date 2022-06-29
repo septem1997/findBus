@@ -1,5 +1,3 @@
-import {SymbolKind} from "vscode-languageserver-types";
-
 const MyFetch = {
     async getDiffBetweenBusAndStation(param: {
         segmentid: number;
@@ -17,6 +15,30 @@ const MyFetch = {
             }
         }
     },
+    async getStations(segmentid: string) {
+        const res: any = await $fetch('/api/bus/getStationsBySegmentId', {
+            method: 'post',
+            body: {
+                segmentId:segmentid
+            }
+        })
+        if (res.code === 0) {
+            const routes =  res.data as BusStationInfo[]
+            return routes
+        }
+    },
+    async getBusStatus(param: {
+        segmentid: string;
+        subrouteid: string;
+    }) {
+        const res: any = await $fetch('/api/bus/getBusStatus', {
+            method: 'post',
+            body: param
+        })
+        if (res.code === 0) {
+            return res.data as BusStatusInfo[]
+        }
+    },
     async getRoutesByStation(param: {
         segmentid: string;
         stationname: string;
@@ -28,6 +50,18 @@ const MyFetch = {
         if (res.code === 0) {
             const routes =  res.data as RouteByStationInfo[]
             return routes
+        }
+    },
+    async getSegmentInfo(param: {
+        segmentid: string;
+        subrouteid: string;
+    }) {
+        const res: any = await $fetch('/api/bus/getSegmentInfo', {
+            method: 'post',
+            body: param
+        })
+        if (res.code === 0) {
+            return res.data
         }
     },
     async getNearbyLocation(latitude: number, longitude: number) {

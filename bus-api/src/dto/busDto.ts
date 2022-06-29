@@ -8,3 +8,8 @@ interface DiffDto {
   stationname: string;
   subrouteid: number;
 }
+
+interface SegmentInfoDto {
+  segmentid: number;
+  subrouteid: number;
+}
