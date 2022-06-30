@@ -28,20 +28,24 @@
       <span v-if="routeInfo.diff">
         约<strong>{{ routeInfo.diffTime }}分钟</strong>后到站
       </span>
-          <span v-else>
+        <span v-else>
         等待发车
       </span>
       </div>
       <div class="distance">
         离
         <strong>{{ nearbyStation }}</strong>
-        最近班车还有<strong>{{ routeInfo.diff }}</strong>站</div>
+        还有<strong>{{ routeInfo.diff }}</strong>站
+      </div>
     </div>
 
     <div class="station-list">
-      <div v-for="sta in stations" :key="sta.stationid">
-        {{sta.stationname}}
-      </div>
+      <station-item v-for="(sta,index) in stations"
+                    :nearby-station="nearbyStation"
+                    :is-first="index===0"
+                    :is-last="index===stations.length-1"
+                    :station="sta" :key="sta.stationid">
+      </station-item>
     </div>
   </div>
 </template>
@@ -84,11 +88,14 @@ const getStations = async () => {
   })
   stations.value = stationInfos
 }
-const getBusStatus = ()=>{
-  MyFetch.getBusStatus({
-    subrouteid:routeInfo.value.subrouteid,
-    segmentid:routeInfo.value.segmentid
+const getBusStatus = async () => {
+  const busList = await MyFetch.getBusStatus({
+    subrouteid: routeInfo.value.subrouteid,
+    segmentid: routeInfo.value.segmentid
   })
+  stations.value.forEach((sta) =>
+      sta.busList = busList.filter(bus => bus.stationid === sta.stationid)
+  )
   // 遍历所有公交车，把公交车移动到对应站点的busList下
 }
 const init = async () => {
@@ -117,7 +124,8 @@ onMounted(async () => {
   display flex
   flex-direction column
 }
-.station-list{
+
+.station-list {
   margin-top 12px
   background white
   height 0
@@ -130,13 +138,15 @@ onMounted(async () => {
   background white
   border-bottom none
   padding 16px
-  .distance{
+
+  .distance {
     position relative
     bottom auto
     right auto
     margin-top 12px
   }
-  .diff-time{
+
+  .diff-time {
     top auto
     bottom 16px
   }
