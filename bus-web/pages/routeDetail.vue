@@ -47,14 +47,19 @@
                     :station="sta" :key="sta.stationid">
       </station-item>
     </div>
+    <div class="loading-box">
+        <van-icon name="replay" @click="getBusStatus" :class="{spin:isLoading}" />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref, useRoute} from "#imports";
+import {onMounted, onUnmounted, ref, useRoute} from "#imports";
 import MyFetch from "~/apis/fetch";
 import useGlobalStore from "~/hooks/globalStore";
 import {GetDistance} from "~/utils/distanceUtil";
+import {Ref} from "@vue/reactivity";
+import {Toast} from "vant";
 
 const route = useRoute();
 // todo query 兜底
@@ -88,15 +93,35 @@ const getStations = async () => {
   })
   stations.value = stationInfos
 }
+const isLoading = ref(false)
+const lastUpdateTime = ref(0)
+const timer = ref(null)
 const getBusStatus = async () => {
+  if (Date.now()-lastUpdateTime.value<30*1000*1000){
+    Toast('操作太频繁了，服务器顶不住啦')
+    return
+  }
+  isLoading.value = true
   const busList = await MyFetch.getBusStatus({
     subrouteid: routeInfo.value.subrouteid,
     segmentid: routeInfo.value.segmentid
   })
+  // 遍历所有公交车，把公交车移动到对应站点的busList下
   stations.value.forEach((sta) =>
       sta.busList = busList.filter(bus => bus.stationid === sta.stationid)
   )
-  // 遍历所有公交车，把公交车移动到对应站点的busList下
+  const res = await MyFetch.getDiffBetweenBusAndStation({
+    subrouteid:Number(routeInfo.value.subrouteid),
+    stationname:nearbyStation.value,
+    segmentid:Number(routeInfo.value.segmentid)
+  })
+  routeInfo.value.diffTime = res.time.toString()
+  routeInfo.value.diff = res.diff.toString()
+  lastUpdateTime.value = Date.now()
+  isLoading.value = false
+
+  clearTimeout(timer.value)
+  timer.value = setTimeout(getBusStatus,1000*60)
 }
 const init = async () => {
   if (routeInfo.value.segmentid) {
@@ -113,10 +138,49 @@ const init = async () => {
 onMounted(async () => {
   init()
 })
+onUnmounted(()=>{
+  clearTimeout(timer.value)
+})
 </script>
 
 <style scoped lang="stylus">
 @import "../assets/css/routeInfo.styl"
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin{
+  animation: spin 500ms linear infinite;
+}
+.loading-box{
+  position fixed
+  right 0
+  top 75%
+  width 60px
+  height 42px
+  background white
+  border-top-left-radius 20px
+  border-bottom-left-radius 20px
+  box-shadow: 0px 0px 10px #aaa;
+  display flex
+  align-items center
+  padding-left 4px
+  .van-icon{
+    width 36px
+    height 36px
+    line-height 36px
+    text-align center
+    color white
+    font-size 24px
+    background #2176ff
+    border-radius 50%
+    transition transform rotate(360deg)
+  }
+}
 .route-page {
   background #eee
   width 100vw
