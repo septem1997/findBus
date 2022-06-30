@@ -10,14 +10,14 @@ export class Subscribe extends BaseEntity {
   @Column({ comment: '订阅的邮箱', length: 128 })
   email: string;
 
-  @Column({ comment: '订阅的路线分段id', length: 32 })
-  segmentid: number;
+  @Column({ comment: '订阅的路线分段id', length: 16 })
+  segmentid: string;
 
   @Column({ comment: '订阅的站名', length: 128 })
   stationname: string;
 
   @Column({ comment: '订阅的路线id', length: 32 })
-  subrouteid: number;
+  subrouteid: string;
 
   @Column({ comment: '提醒开始时间', length: 16 })
   clockStartTime: string;

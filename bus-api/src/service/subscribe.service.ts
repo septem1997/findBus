@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entity/user';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, Repository, MoreThanOrEqual } from 'typeorm';
 import { UserDto } from '../dto/user.dto';
 import { Subscribe } from '../entity/subscribe';
 
@@ -12,14 +12,38 @@ export class SubscribeService {
     private repository: Repository<Subscribe>,
   ) {}
 
-  unsubscribe() {
-
+  async getSubscribesByNow() {
+    const time = new Date().toTimeString().substring(0, 5);
+    const list = await this.repository.find({
+      where: {
+        disabled: false,
+        clockStartTime: LessThanOrEqual(time),
+        clockEndTime: MoreThanOrEqual(time),
+      },
+    });
+    return list;
   }
 
-  async subscribe(userDto: UserDto) {
-    const user = new Subscribe();
-    user.email = userDto.email;
-    // user.createTime = new Date().toISOString()
-    await this.repository.save(user);
+  async unsubscribe(id: number) {
+    const one = await this.repository.findOneBy({
+      id,
+    });
+    if (one) {
+      one.disabled = true;
+      await this.repository.save(one);
+    }
+  }
+
+  async subscribe(subDto: SubscriptDto, user: User) {
+    const sub = new Subscribe();
+    sub.email = user.email;
+    sub.creator = user;
+    sub.clockEndTime = subDto.clockEndTime;
+    sub.clockStartTime = subDto.clockStartTime;
+    sub.segmentid = subDto.segmentid;
+    sub.stationname = subDto.stationname;
+    sub.subrouteid = subDto.subrouteid;
+    sub.createTime = new Date();
+    await this.repository.save(sub);
   }
 }

@@ -18,7 +18,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     Logger.error(exception.stack);
     const errorResponse = {
       message: message,
-      code: 1, // 自定义code
+      code: 1, // todo 自定义code
       url: request.originalUrl, // 错误的url地址
     };
     const status =

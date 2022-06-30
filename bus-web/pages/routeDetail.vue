@@ -65,19 +65,19 @@ const route = useRoute();
 // todo query 兜底
 // const segmentid = ref(route.query.segmentId as string)
 // const routeId = ref(route.query.routeId as string)
-// const routeInfo = ref(route.params as any as RouteByStationInfo)
-const routeInfo = ref({
-  diff: "1",
-  diffTime: "2",
-  fstsendtime: "06:00",
-  fststation: "环洲北路东",
-  lstsendtime: "21:30",
-  lststation: "格力康乐园",
-  rundirection: "2",
-  segmentid: "60244",
-  subrouteid: "225",
-  subroutename: "42路"
-})
+const routeInfo = ref(route.params as any as RouteByStationInfo)
+// const routeInfo = ref({
+//   diff: "1",
+//   diffTime: "2",
+//   fstsendtime: "06:00",
+//   fststation: "环洲北路东",
+//   lstsendtime: "21:30",
+//   lststation: "格力康乐园",
+//   rundirection: "2",
+//   segmentid: "60244",
+//   subrouteid: "225",
+//   subroutename: "42路"
+// })
 const nearbyStation = ref('')
 const onClickLeft = () => history.back();
 const stations = ref([] as BusStationInfo[])
@@ -97,7 +97,10 @@ const isLoading = ref(false)
 const lastUpdateTime = ref(0)
 const timer = ref(null)
 const getBusStatus = async () => {
-  if (Date.now()-lastUpdateTime.value<30*1000*1000){
+  if (isLoading.value){
+    return
+  }
+  if (Date.now()-lastUpdateTime.value<30*1000){
     Toast('操作太频繁了，服务器顶不住啦')
     return
   }

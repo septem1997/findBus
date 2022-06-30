@@ -11,6 +11,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -33,6 +34,7 @@ export class UserController {
   }
 
   @Get('info')
+  @UseGuards(AuthGuard('userJwt'))
   info(@Req() request) {
     return request.user;
   }

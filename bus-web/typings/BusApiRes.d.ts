@@ -43,3 +43,11 @@ interface RouteByStationInfo {
   subrouteid: number;
   subroutename: string;
 }
+
+interface SubscriptDto {
+  segmentid: string;
+  stationname: string;
+  subrouteid: string;
+  clockStartTime: string;
+  clockEndTime: string;
+}

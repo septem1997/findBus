@@ -31,21 +31,21 @@ export class UserService {
 
   sendValidCode(userDto: UserDto) {
     // random valid code
-    const randomCode = (Math.random() * 10000).toFixed(0).padStart(4, '0');
+    const randomCode = (Math.random() * 1000000).toFixed(0).padStart(6, '0');
     this.cacheManager.set(userDto.email, randomCode, {
       ttl: 120,
     });
     const html = `<div style="width: 800px;height: 280px;
           align-items: center;justify-content: center;
           display: flex;flex-direction: column;">
-        <h2>巴士到哪了</h2>
+        <h2>公交到哪了</h2>
         <div style="border: 1px solid #cad5e8;padding: 24px">
             您好！<br>
             您的验证码为<strong>${randomCode}</strong>。如非本人操作请忽略本邮件。
         </div>
       </div>`;
     sendMail({
-      title: '【巴士到哪了】邮件验证',
+      title: '【公交到哪了】邮件验证',
       content: html,
       receiver: userDto.email,
     });
@@ -87,12 +87,12 @@ export class UserService {
   }
 
   async create(userDto: UserDto) {
-    const findAdmin = await this.repository.findOne({
+    const findUser = await this.repository.findOne({
       where: {
         email: userDto.email,
       },
     });
-    if (findAdmin) {
+    if (findUser) {
       throw new HttpException('该用户名已存在', HttpStatus.CONFLICT);
     }
     const randomCode = await this.cacheManager.get(userDto.email);
