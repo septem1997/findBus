@@ -31,7 +31,7 @@ const BusAPI = {
         key: keyword,
       },
     );
-    return res.data;
+    return res.data.data;
   },
   async getStationsBySegmentId(segmentid: string) {
     const res: AxiosResponse<BusAPIRes> = await BusAxios.post(

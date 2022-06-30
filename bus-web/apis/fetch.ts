@@ -39,6 +39,18 @@ const MyFetch = {
             return res.data as BusStatusInfo[]
         }
     },
+    async getRoutesByLineName(keyword: string) {
+        const res: any = await $fetch('/api/bus/getRoutesByLineName', {
+            method: 'post',
+            body: {
+                keyword
+            }
+        })
+        if (res.code === 0) {
+            const routes = res.data as RouteByStationInfo[]
+            return routes
+        }
+    },
     async getRoutesByStation(param: {
         segmentid: string;
         stationname: string;

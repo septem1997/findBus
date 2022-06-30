@@ -32,4 +32,9 @@ export class BusController {
   async getBusStatus(@Body() segmentInfo: SegmentInfoDto) {
     return await BusAPI.getBusStatusListBySegmentId(segmentInfo);
   }
+
+  @Post('getRoutesByLineName')
+  async getRoutesByLineName(@Body('keyword') keyword: string) {
+    return await BusAPI.getRoutesByLineName(keyword);
+  }
 }

@@ -1,6 +1,9 @@
 <template>
   <div>
-    <van-search class="search-bar" v-model="searchText" placeholder="搜索公交路线"/>
+    <van-search class="search-bar"
+                disabled
+                @click="gotoSearch"
+                placeholder="搜索公交路线"/>
     <div style="padding: 0 12px">
       <van-tag round type="primary">附近站点</van-tag>
     </div>
@@ -18,8 +21,10 @@
 
 <script setup lang="ts">
 
-import {definePageMeta, navigateTo, onMounted, reactive, ref, useRouter} from "#imports";
+import {definePageMeta, navigateTo, onMounted, reactive, ref, useRouter, watch} from "#imports";
 import useGlobalStore from "~/hooks/globalStore";
+import {debounce} from 'lodash';
+import MyFetch from "~/apis/fetch";
 
 definePageMeta({
   layout: 'home',
@@ -41,8 +46,11 @@ onMounted(async () => {
   await updateNearbyLocations()
   isLoading.value = false
 })
-const searchText = ref('')
-
+const gotoSearch = ()=>{
+  navigateTo({
+    name:'search'
+  })
+}
 </script>
 
 <style scoped lang="stylus">
@@ -50,6 +58,6 @@ const searchText = ref('')
   position sticky
   top 0
   background white
-  z-index 3
+  z-index 3000
 }
 </style>

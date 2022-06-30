@@ -7,12 +7,14 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "nuxt": "3.0.0-rc.4",
     "stylus": "^0.57.0",
     "stylus-loader": "^7.0.0",
     "unplugin-vue-components": "^0.19.6"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "vant": "^3.5.1"
   }
 }

@@ -34,13 +34,11 @@
 import {PropType} from "@vue/runtime-core";
 import {navigateTo, useRoute,useRouter} from "#imports";
 
-const route = useRoute()
-const router = useRouter();
 const props = defineProps({
   routeInfo: Object as PropType<RouteByStationInfo>,
 })
 const navigateToDetail = ()=>{
-  router.push({
+  navigateTo({
     name:'routeDetail',
     params:{
       ...props.routeInfo
